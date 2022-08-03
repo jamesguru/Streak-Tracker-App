@@ -6,4 +6,8 @@ export interface Streak{
     image:string,
 
     date:string,
+
+    currentDate:Date,
+
+    diff:number
 }
