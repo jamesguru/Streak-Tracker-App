@@ -4,7 +4,7 @@ background-color: #d1411f;
 
 margin: 30px;
 
-
+transition: all 1s ease;
 position: relative;
 
 display: flex;
@@ -25,7 +25,7 @@ h1{
 
 .toggle-icon{
 
-
+    transition: all 1s ease;
     display: flex;
 
     font-size: 55px;
@@ -45,6 +45,19 @@ img{
 }
 
 
+.none{
+
+    font-size: 17px;
+
+    font-style: italic;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+}
+
 .toggle-icon-add{
 
 
@@ -55,12 +68,14 @@ img{
     color: #fff;
 
     cursor: pointer;
+
+    transition: all 1s ease;
 }
 
 
 .toggle-icon-close{
 
-
+    transition: all 1s ease;
     font-size: 55px;
 
     color: #fff;
@@ -79,6 +94,8 @@ img{
     display: none;
 
     cursor: pointer;
+
+    transition: all 1s ease;
 }
 
 
@@ -98,6 +115,8 @@ img{
     
 
     padding: 5px;
+
+    transition: all 1s ease;
 }
 
 .adding-streak h3{
@@ -309,4 +328,37 @@ font-size: 20px;
     color: white;
 
     cursor: pointer;
+}
+
+
+.best-streak{
+
+
+    position: absolute;
+
+    background-color: #fff;
+
+    top: 0;
+
+    left: 0;
+
+    height: 200px;
+
+    width: 200px;
+
+    display: none;
+
+    flex-direction: column;
+}
+
+
+.best-streak-item{
+
+
+    
+    display: flex;
+
+    flex-direction: column;
+
+
 }

@@ -1,71 +1,83 @@
-import {Streak} from './interface/streak';
+import { Streak } from "./interface/streak";
 const addICon = document.querySelector(".toggle-icon-add") as HTMLElement;
 
-const closeIcon = document.querySelector('.toggle-icon-close') as HTMLElement;
+const closeIcon = document.querySelector(".toggle-icon-close") as HTMLElement;
 
-const btnAddStreak = document.querySelector(".btn-add-streak") as HTMLButtonElement;
+const btnAddStreak = document.querySelector(
+  ".btn-add-streak"
+) as HTMLButtonElement;
 
+const menuIcon = document.querySelector(".menu-icon") as HTMLElement;
 
-const menuIcon = document.querySelector('.menu-icon') as HTMLElement;
-
-const addingSteak = document.querySelector('.adding-streak') as HTMLElement;
-
+const addingSteak = document.querySelector(".adding-streak") as HTMLElement;
 
 const image = document.querySelector(".streak-img") as HTMLImageElement;
 
-
 const headingStreak = document.querySelector(".heading-streak") as HTMLElement;
 
+const addStreakTitle = document.querySelector(
+  ".streak-name"
+) as HTMLInputElement;
 
-const addStreakTitle = document.querySelector(".streak-name") as HTMLInputElement;
+const addStreakImage = document.querySelector(
+  ".streak-image"
+) as HTMLInputElement;
 
-const addStreakImage = document.querySelector(".streak-image") as HTMLInputElement;
-
-
-const addStreakCurrentDate = document.querySelector(".start-date") as HTMLInputElement;
+const addStreakCurrentDate = document.querySelector(
+  ".start-date"
+) as HTMLInputElement;
 
 const errorText = document.querySelector(".error") as HTMLElement;
 
 const streakItems = document.querySelector(".streaks") as HTMLElement;
 
-
 const pop = document.querySelector(".pop") as HTMLElement;
 
+const none = document.querySelector(".none") as HTMLElement;
 
-
-
-
-
+const bestStreak = document.querySelector(".best") as HTMLElement;
 
 const streaks: Streak[] = [];
 
+const listDate: number[] = [];
+
+
 
 addICon.addEventListener("click", () => {
+  Toggle.ShowAddingStreak();
 
-        closeIcon.style.display = "flex";
-
-        menuIcon.style.display = "flex";
-
-        addingSteak.style.display = "flex";
-
-
-        addICon.style.display = "none";
-
-
-        image.style.display = "none";
-
-
-        headingStreak.style.display = "none";
-
-
-})
-
-
+  showBestActivity();
+});
 
 closeIcon.addEventListener("click", () => {
+  Toggle.HideAddingStreak();
 
+  showBestActivity();
+
+});
+
+
+
+class Toggle {
+  constructor() {}
+
+  static ShowAddingStreak() {
+    closeIcon.style.display = "flex";
+
+    menuIcon.style.display = "flex";
+
+    addingSteak.style.display = "flex";
+
+    addICon.style.display = "none";
+
+    image.style.display = "none";
+
+    headingStreak.style.display = "none";
+    
+  }
+
+  static HideAddingStreak() {
     addICon.style.display = "flex";
-
 
     image.style.display = "flex";
 
@@ -78,81 +90,73 @@ closeIcon.addEventListener("click", () => {
     menuIcon.style.display = "none";
 
     addingSteak.style.display = "none";
+  }
+}
+
+class MyStreak {
+  private added_streaks: Streak[] = streaks;
+
+  constructor() {}
+
+  static Close() {
+    closeModal();
+  }
+
+  static Delete(index) {
+    deleteModal(index);
+  }
+
+  static ShowPop(index) {
+    const streak = streaks[index];
+    pop.style.display = "flex";
+
+    pop.innerHTML = `
     
-
+    <div class="pops-item"> 
     
-});
-
-
-
-
-
-
-btnAddStreak.addEventListener("click", () => {
-
-
+        <p>${streak.title}</p>
     
-    const newStreak: Streak = {
-
-        title: addStreakTitle.value,
     
-        image: addStreakImage.value,
     
-        date: addStreakCurrentDate.value,
-    }
-
-
-    if(addStreakImage.value || addStreakTitle.value || addStreakCurrentDate.value){
-
-
-        streaks.push(newStreak);
-
+        <img src=${streak.image} height="150px" width="150px" />
         
+    
+        <p>${streak.date}</p>
+    
+        <p>${streak.diff} days</p>
+    
+    
+        <div class="pop-item-btn">
+    
+                    <button class="btn-close" onclick="MyStreak.Close()">close</button>
+    
+                    <button class="btn-delete" onclick="MyStreak.Delete(${index})">Delete</button>
+        </div>
+    
+    
+    
+    </div>`;
+  }
 
-        
-
-        addStreakTitle.value = "";
-
-        addStreakImage.value = "";
-
-        addStreakCurrentDate.value = "";
-
-
-        
-        showStreak(streaks);
-
-
-        
-
-
-    }else{
-
-
-        errorText.innerHTML = `<span> Please fill the values </span>`;
-    }
-
+  showStreak() {
 
     
-
-    console.log(streaks);
-
-});
+    if (this.added_streaks) {
 
 
+     none.style.display = "none";
 
-function showStreak(streaksList){
+      let li = "";
 
-    let li = "";
-
-    streaksList.forEach((streak,index) => {
-
-
+      this.added_streaks.forEach((streak, index) => {
         li += `
   
 
+    
+
       
   
-        <li class="streak-item" onclick="MakeBold(${index});">
+        <li class="streak-item" onclick="MyStreak.ShowPop(${index});">
 
             <img src=${streak.image} alt="" >
 
@@ -160,74 +164,173 @@ function showStreak(streaksList){
 
             <span>${streak.title}</span>
 
+            <span>${streak.diff} days tracked</span>
+
+
         </li>
 
 
-        `
+        `;
+      });
 
+      streakItems.innerHTML = li;
 
-
-    } );
-
-
-
-    streakItems.innerHTML = li;
-
+    } else {
+        none.style.display = "flex";
+    }
+  }
 }
 
 
-function MakeBold(index){
 
-const streak = streaks[index];
-pop.style.display = "flex";
+class Time {
+  constructor(startDate: string) {}
 
-pop.innerHTML = `
+  static getDaysOfStreak(date: string) {
+    let currentDate = new Date().getTime();
 
-<div class="pops-item"> 
+    let streakDate = new Date(date).getTime();
 
-    <p>${streak.title}</p>
+    const diffInDays: number = Math.floor(
+      (currentDate - streakDate) / (1000 * 3600 * 24)
+    );
+
+    listDate.push(diffInDays);
+
+    return diffInDays;
+  }
+
+  static getGreatestDayDifference() {
+    if (listDate) {
+      const sortedListDate:number[] = listDate.sort();
+
+      const largestTime:number = sortedListDate[listDate.length-1];
+
+      return largestTime;
+    }
+  }
+}
+
+const my_streak = new MyStreak();
 
 
 
-    <img src=${streak.image} height="150px" width="150px" />
-    
-
-    <p>${streak.date}</p>
-
-    <p>24 days </p>
 
 
-    <div class="pop-item-btn">
+btnAddStreak.addEventListener("click", () => {
+  const newStreak: Streak = {
+    title: addStreakTitle.value,
 
-                <button class="btn-close" onclick="Close()">close</button>
+    image: addStreakImage.value,
 
-                <button class="btn-delete" onclick="Delete(${index})">Delete</button>
-    </div>
+    date: addStreakCurrentDate.value,
 
+    currentDate: new Date(),
 
+    diff: Time.getDaysOfStreak(addStreakCurrentDate.value) < 0 ? 0 : Time.getDaysOfStreak(addStreakCurrentDate.value),
+  };
 
-</div>`;
+  if (
+    addStreakImage.value ||
+    addStreakTitle.value ||
+    addStreakCurrentDate.value
+  ) {
+    streaks.push(newStreak);
 
+    addStreakTitle.value = "";
+
+    addStreakImage.value = "";
+
+    addStreakCurrentDate.value = "";
+
+    my_streak.showStreak();
+  } else {
+    errorText.innerHTML = `<span> Please fill the values </span>`;
+  }
+
+  console.log(streaks);
+});
+
+function closeModal() {
+  pop.style.display = "none";
+
+  my_streak.showStreak();
+
+  showBestActivity();
 
 
 }
 
-function Close(){
+function deleteModal(index) {
+  streaks.splice(index, 1);
 
-    pop.style.display = "none";
-    
+  pop.style.display = "none";
+
+  my_streak.showStreak();
+
+  showBestActivity();
 }
 
 
-function Delete(index){
+function showBestActivity (){
 
 
     
 
-    streaks.splice(index,1);
+        const getLargestTime:number |undefined = Time.getGreatestDayDifference();
+
+        console.log(getLargestTime);
+
+        console.log(getLargestTime);
+    
+        if(getLargestTime){
+    
+            streaks.forEach((streak:Streak,index:number)=>{
+    
+    
+                if(streak.diff === getLargestTime){
+    
+                    console.log(streak);
+                    bestStreak.innerHTML = `
+                    
+                    
+                    <div>
+                        <img src=${streak.image} alt="" >
+    
+                        <span>${streak.date}</span>
+    
+                        <span>${streak.title}</span>
+    
+                        <span>${streak.diff} days tracked</span>
+
+                    </div>
+    
+                          `
+    
+    
+                }else{
+    
+                    bestStreak.style.display="none";
+    
+                }
+    
+    
+    
+            })
+    
+    
+    
+        }else{
+    
+    
+    
+        }
+    
+    
+    
+   
 
 
-    showStreak(streaks);
 
 }
 
